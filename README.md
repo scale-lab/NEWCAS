@@ -1,13 +1,4 @@
-This is a fantastic initiative! Creating a tutorial to teach hardware designers how to integrate LLMs into their workflow is highly relevant right now. Your initial outline has great structure, but as you noted, it needs some fleshing out, formatting polish, and a few technical corrections.
 
-A couple of gentle corrections I made while expanding this:
-
-1. **Tool installation:** `cocotb` is a Python package, so it must be installed via `pip` rather than `apt` or `brew`. I've grouped the package managers accordingly.
-2. **Specification contradiction:** In your original draft, the prompt requested an *unsigned* 8-bit output, but the bullet point described it as a *signed* 8-bit output. Based on our previous debugging session where an 8-bit signed integer couldn't hold the value 181, I have updated the spec to clearly state **unsigned** to prevent your students from hitting that same mathematical wall!
-
-Here is the improved, fully formatted tutorial.
-
----
 
 # NEWCAS Tutorial: Leveraging LLMs in Hardware Design
 
@@ -89,7 +80,7 @@ verilator -Wno-LATCH -Wno-WIDTH --binary --top-module signed_isqrt_tb problem1_t
 
 ```
 
-**Iterative Debugging:** If the testbench reports failures, copy the terminal errors and paste them back into the LLM. Ask it to analyze the failure and provide a corrected `signed_isqrt.v` file. Repeat this until the testbench prints `SUCCESS`.
+**Iterative Debugging (manual Agentic flow for generation):** If the testbench reports failures, copy the terminal errors and paste them back into the LLM. Ask it to analyze the failure and provide a corrected `signed_isqrt.v` file. Repeat this until the testbench prints `SUCCESS`.
 
 ---
 
@@ -129,7 +120,8 @@ yosys -s synth.ys
 
 
 3. Look at the terminal output for the `Chip area` statistic.
-4. **LLM Optimization:** Go back to your LLM and ask: *"Here is my working Verilog code. Can you optimize this algorithm to use fewer hardware resources (smaller area) while maintaining combinational logic?"*
+ **LLM Optimization terative Debugging (manual Agentic flow for area optimization):** 
+4. Go back to your LLM and ask: *"Here is my working Verilog code and designa area. Can you optimize this algorithm to use fewer hardware resources (smaller area) while maintaining combinational logic?"*
 5. Replace your code, re-verify with Verilator (Step 4), and re-run Yosys to see how much the LLM reduced your design area!
 6. Try various prompiting strategies to further reduce the area, until you cannot get further improvements.
    
@@ -151,7 +143,8 @@ verilator_coverage --annotate report coverage.dat
 
 
 2. Check the generated `report/` directory to see which lines of Verilog were not triggered.
-3. **LLM Prompt:** Ask the LLM to write additional Verilog test cases targeting the uncovered lines, append them to `problem1_tb.v`, and re-test to achieve 100% coverage.
+**LLM Prompt (manual Agentic flow for coverage improvement):**
+3. Ask the LLM to write additional Verilog test cases targeting the uncovered lines, append them to `problem1_tb.v`, and re-test to achieve 100% coverage.
 
 ---
 
@@ -179,4 +172,3 @@ make SIM=icarus
 
 ---
 
-Does this structure and level of detail align with what you envision your attendees experiencing during the NEWCAS session?
