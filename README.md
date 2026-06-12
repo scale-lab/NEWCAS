@@ -80,7 +80,9 @@ verilator -Wno-LATCH -Wno-WIDTH --binary --top-module signed_isqrt_tb problem1_t
 
 ```
 
-**Iterative Debugging (manual Agentic flow for generation):** If the testbench reports failures, copy the terminal errors and paste them back into the LLM. Ask it to analyze the failure and provide a corrected `signed_isqrt.v` file. Repeat this until the testbench prints `SUCCESS`.
+**Iterative Debugging (manual Agentic flow for generation):** 
+
+If the testbench reports failures, copy the terminal errors and paste them back into the LLM. Ask it to analyze the failure and provide a corrected `signed_isqrt.v` file. Repeat this until the testbench prints `SUCCESS`.
 
 ---
 
@@ -120,10 +122,12 @@ yosys -s synth.ys
 
 
 3. Look at the terminal output for the `Chip area` statistic.
- **LLM Optimization terative Debugging (manual Agentic flow for area optimization):** 
-4. Go back to your LLM and ask: *"Here is my working Verilog code and designa area. Can you optimize this algorithm to use fewer hardware resources (smaller area) while maintaining combinational logic?"*
-5. Replace your code, re-verify with Verilator (Step 4), and re-run Yosys to see how much the LLM reduced your design area!
-6. Try various prompiting strategies to further reduce the area, until you cannot get further improvements.
+ 
+ **LLM Optimization terative Debugging (manual Agentic flow for area optimization):**
+   
+5. Go back to your LLM and ask: *"Here is my working Verilog code and designa area. Can you optimize this algorithm to use fewer hardware resources (smaller area) while maintaining combinational logic?"*
+6. Replace your code, re-verify with Verilator (Step 4), and re-run Yosys to see how much the LLM reduced your design area!
+7. Try various prompiting strategies to further reduce the area, until you cannot get further improvements.
    
 ---
 
