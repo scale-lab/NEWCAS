@@ -1,65 +1,182 @@
-# NEWCAS
-NEWCAS tutorial
+This is a fantastic initiative! Creating a tutorial to teach hardware designers how to integrate LLMs into their workflow is highly relevant right now. Your initial outline has great structure, but as you noted, it needs some fleshing out, formatting polish, and a few technical corrections.
 
-## Installations
+A couple of gentle corrections I made while expanding this:
 
-# MacOS: 
-brew install yosys icarus-verilog verilator cocotb
-pip install pytest
+1. **Tool installation:** `cocotb` is a Python package, so it must be installed via `pip` rather than `apt` or `brew`. I've grouped the package managers accordingly.
+2. **Specification contradiction:** In your original draft, the prompt requested an *unsigned* 8-bit output, but the bullet point described it as a *signed* 8-bit output. Based on our previous debugging session where an 8-bit signed integer couldn't hold the value 181, I have updated the spec to clearly state **unsigned** to prevent your students from hitting that same mathematical wall!
 
-# Ubuntu / Windows Ubuntu
-apt install yosys icarus-verilog verilator cocotb
-pip install pytest
+Here is the improved, fully formatted tutorial.
 
-## Synthesis
-Download gscl45nm.lib
-Download problem1_tb.v
+---
 
-# Hardware Design and Optimization: 
+# NEWCAS Tutorial: Leveraging LLMs in Hardware Design
 
-Write a combinational Verilog module named signed_isqrt to compute the integer square root of x, where x is an input signed 16-bit integer and the output y is an unsigned 8-bit integer. 
+Welcome to the NEWCAS tutorial on integrating Large Language Models (LLMs) into the hardware design, synthesis, and verification lifecycle. In this tutorial, we will use an LLM to design an integer square root module, simulate it, optimize its area, and verify its coverage using industry-standard open-source tools.
 
-x - Signed 16-bit input representing the value for integer square root computation (operational range: -32,768 to +32,767, with negative values handled as special cases) 
+## 1. Environment Setup
 
-y - Signed 8-bit output containing the computed integer square root value (operational range: 0 to 181 for valid positive inputs, 0 for negative inputs) 
+Before we begin, ensure your system has the required open-source hardware tools installed: **Yosys** (synthesis), **Icarus Verilog** & **Verilator** (simulation), and **Cocotb** (Python-based verification).
 
-0. Save the LLM verilog file into <design_fname>.v
-1. Make sure your verilog design produces SUCCESS on the testbench
+### macOS
 
-verilator -Wno-LATCH -Wno-WIDTH --binary   --top-module signed_isqrt_tb problem1_tb.v <design_fname>.v
+Open your terminal and run:
+
+```bash
+# Install hardware tools via Homebrew
+brew install yosys icarus-verilog verilator
+
+# Install Python verification libraries
+pip install pytest cocotb
+
+```
+
+### Ubuntu / Windows Subsystem for Linux (WSL)
+
+Open your terminal and run:
+
+```bash
+# Install hardware tools via APT
+sudo apt update
+sudo apt install yosys icarus-verilog verilator gtkwave
+
+# Install Python verification libraries
+pip install pytest cocotb
+
+```
+
+---
+
+## 2. Preparing for Synthesis
+
+To synthesize our hardware design and calculate its physical area, we need a standard cell library.
+
+1. Download the `gscl45nm.lib` (Generic Standard Cell Library, 45nm).
+2. Download the baseline testbench provided for this tutorial: `problem1_tb.v`.
+3. Place both files in your working directory.
+
+---
+
+## 3. Hardware Design Generation
+
+We will start by asking an LLM (like Gemini) to generate our baseline Verilog module. Copy and paste the following prompt into the LLM:
+
+> **Prompt for LLM:**
+> Write a combinational Verilog module named `signed_isqrt` to compute the integer square root of $x$, where $x$ is an input signed 16-bit integer and the output $y$ is an unsigned 8-bit integer.
+> **Specifications:**
+> * `x`: Signed 16-bit input representing the value for integer square root computation (operational range: -32,768 to +32,767). Negative values should be handled as special cases and output 0.
+> * `y`: Unsigned 8-bit output containing the computed integer square root value (operational range: 0 to 181 for valid positive inputs, 0 for negative inputs).
+> 
+> 
+
+**Next Steps:**
+
+1. Save the generated Verilog code into a file named `signed_isqrt.v`.
+
+---
+
+## 4. Initial Simulation & Debugging (Verilator)
+
+Before synthesizing, we must ensure the LLM's design is functionally correct. We will use Verilator to compile and run the provided testbench against the generated design.
+
+Run the following commands in your terminal:
+
+```bash
+# Compile the design and testbench
+verilator -Wno-LATCH -Wno-WIDTH --binary --top-module signed_isqrt_tb problem1_tb.v signed_isqrt.v
+
+# Execute the compiled simulation
 ./obj_dir/Vsigned_isqrt_tb
 
-If there are any failures, iterate with the LLM to fix the bugs.
+```
 
-2. Synthesis the design and report total area
-read_verilog <file_name>.v
-hierarchy -check -top <top_module>
+**Iterative Debugging:** If the testbench reports failures, copy the terminal errors and paste them back into the LLM. Ask it to analyze the failure and provide a corrected `signed_isqrt.v` file. Repeat this until the testbench prints `SUCCESS`.
+
+---
+
+## 5. Synthesis and Area Optimization
+
+Once the design is functionally correct, we will synthesize it using **Yosys** to map the behavioral Verilog to actual logic gates and measure its silicon area.
+
+1. Create a script file named `synth.ys` and add the following Yosys commands:
+```tcl
+# Read the design file
+read_verilog signed_isqrt.v
+
+# Check design hierarchy
+hierarchy -check -top signed_isqrt
+
+# Generic synthesis and optimization
 proc; opt; opt; techmap; opt
+
+# Map flip-flops and logic to the 45nm library
 dfflibmap -liberty gscl45nm.lib
 abc -liberty gscl45nm.lib
+
+# Generate statistics (Area)
 stat -liberty gscl45nm.lib
-write_verilog <file_name>_syn.v
 
-run commands individually or save in a script, and run yosys -s <script_filename>
+# Write out the synthesized netlist
+write_verilog signed_isqrt_syn.v
 
-3. Optimize your design to be area efficient using the LLM. Report the final design area
+```
 
-#  Design Verification: 
 
-1. report coverage of the given testbench
-verilator -Wno-LATCH -Wno-WIDTH  --binary -j 0 --coverage --coverage-line --coverage-toggle --top-module signed_isqrt_tb problem1_tb.v problem1a.v
+2. Run the script:
+```bash
+yosys -s synth.ys
+
+```
+
+
+3. Look at the terminal output for the `Chip area` statistic.
+4. **LLM Optimization:** Go back to your LLM and ask: *"Here is my working Verilog code. Can you optimize this algorithm to use fewer hardware resources (smaller area) while maintaining combinational logic?"*
+5. Replace your code, re-verify with Verilator (Step 4), and re-run Yosys to see how much the LLM reduced your design area!
+6. Try various prompiting strategies to further reduce the area, until you cannot get further improvements.
+   
+---
+
+## 6. Design Verification & Coverage
+
+Testbenches rarely test every possible edge case on the first try. We will use Verilator's coverage tools to see what lines of code the testbench missed.
+
+1. Run Verilator with coverage flags enabled:
+```bash
+verilator -Wno-LATCH -Wno-WIDTH --binary -j 0 --coverage --coverage-line --coverage-toggle --top-module signed_isqrt_tb problem1_tb.v signed_isqrt.v
+
 ./obj_dir/Vsigned_isqrt_tb
+
 verilator_coverage --annotate report coverage.dat
 
-2. Use LLM to increase coverage of the testbench, re-test and report the new coverage
+```
 
 
-1. Create a Python testbench
+2. Check the generated `report/` directory to see which lines of Verilog were not triggered.
+3. **LLM Prompt:** Ask the LLM to write additional Verilog test cases targeting the uncovered lines, append them to `problem1_tb.v`, and re-test to achieve 100% coverage.
 
-Write a python test bench using cocotb for a a combinational Verilog module named signed_isqrt to compute the integer square root of x, where x is an input signed 16-bit integer and the output y is an unsigned 8-bit integer. Create also the Makefile
+---
 
-Save the python file and the Makefile. Adjust any filenames in the Makefile
-run make SIM=icarus
+## 7. Advanced Verification: Python & Cocotb
 
-2. Ensure the design passes the testbench
-3. 
+Writing testbenches in pure Verilog can be tedious. Cocotb allows us to write hardware testbenches using Python, taking advantage of Python's math libraries for reference models.
+
+Ask the LLM to generate the Python environment:
+
+> **Prompt for LLM:**
+> Write a Python testbench using cocotb for a combinational Verilog module named `signed_isqrt` to compute the integer square root of $x$, where $x$ is an input signed 16-bit integer and the output $y$ is an unsigned 8-bit integer. Include directed edge cases and randomized testing. Also, create the standard cocotb Makefile for the Icarus Verilog simulator.
+
+**Execution:**
+
+1. Save the Python code to `test_signed_isqrt.py`.
+2. Save the Makefile code to `Makefile`. *(Ensure the `MODULE` and `TOPLEVEL` variables in the Makefile correctly match your filenames).*
+3. Run the simulation using Icarus Verilog:
+```bash
+make SIM=icarus
+
+```
+
+
+4. If there are any `0.00ns ERROR gpi` failures, copy the traceback to the LLM and ask it to fix any port naming mismatches!
+
+---
+
+Does this structure and level of detail align with what you envision your attendees experiencing during the NEWCAS session?
