@@ -16,8 +16,8 @@ module signed_isqrt_tb;
 
     // Instantiate the Unit Under Test (UUT)
     signed_isqrt uut (
-        .in_0(in_0), 
-        .out(out)
+        .x(in_0), 
+        .y(out)
     );
 
 initial begin
