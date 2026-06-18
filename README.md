@@ -89,6 +89,8 @@ verilator -Wno-LATCH -Wno-WIDTH --binary --top-module signed_isqrt_tb problem1_t
 
 ```
 
+Inspect the out, and make sure everything is marked "SUCCESS".
+
 **Iterative Debugging (manual Agentic flow for generation):** 
 
 If the testbench reports failures, copy the terminal errors and paste them back into the LLM. Ask it to analyze the failure and provide a corrected `signed_isqrt.v` file. Repeat this until the testbench prints `SUCCESS`.
