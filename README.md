@@ -57,6 +57,7 @@ We will start by asking an LLM (like Gemini) to generate our baseline Verilog mo
 | **L, M, N, O, P, Q, R** | [![DeepSeek](https://img.shields.io/badge/DeepSeek-4D6BFE?style=for-the-badge&logo=deepseek&logoColor=white)](https://deepseek.com) |
 | **S, T, U, V, W, X, Y, Z** | [![Google](https://img.shields.io/badge/Google_Gemini-8E75FF?style=for-the-badge&logo=googlegemini&logoColor=white)](https://gemini.google.com) |
 
+As you progress in your design, make sure to track your metrics using [[!this form](!https://forms.gle/8HHsJmGQMyF7V9D46)] 
 
 After logging into your selected LLM, Copy and paste the following prompt into the LLM:
 
