@@ -46,10 +46,6 @@ To synthesize our hardware design and calculate its physical area, we need a sta
 3. Place both files in your working directory.
 
 ---
-
-[![Random AI Generator](https://dynamic-svg-labels.vercel.app/api/random-ai?text=Click+to+Roll)](https://github.com)
-
----
 ## 3. Hardware Design Generation
 
 We will start by asking an LLM (like Gemini) to generate our baseline Verilog module. First you need to select an LLM.Find your match based on the **first letter of your name**! 
