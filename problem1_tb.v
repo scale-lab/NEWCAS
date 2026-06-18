@@ -55,12 +55,6 @@ end
         $display("Starting Integer Square Root Testbench...");
         $display("-------------------------------------------");
 
-        // --- TEST CASE 1: Negative Boundaries ---
-/*        $display("Testing Negative Corner Cases:");
-        in_0 = -32768; check_output();
-        in_0 = -16384; check_output();
-        in_0 = -1;     check_output();
-*/
         // --- TEST CASE 2: Zero & Low Values ---
         $display("\nTesting Zero and Low Values:");
         in_0 = 0;      check_output();
