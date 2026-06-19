@@ -66,8 +66,19 @@ After logging into your selected LLM, Copy and paste the following prompt into t
 > **Specifications:**
 > * `x`: Signed 16-bit input representing the value for integer square root computation (operational range: -32,768 to +32,767). Negative values should be handled as special cases and output 0.
 > * `y`: Unsigned 8-bit output containing the computed integer square root value (operational range: 0 to 181 for valid positive inputs, 0 for negative inputs).
-> 
-> 
+
+You can experiment with Chain-of-Though techniques here (especially if the design fails simulation in the next step). For example:
+
+> **Prompt for LLM:**
+>You are an expert digital IC design engineer. Your task is to design a Verilog module for [INSERT SPECIFICATION from earier]. 
+
+>To ensure the design is synthesizable and bug-free, you must think step-by-step. Do not output the final Verilog code until you have completed the following steps:
+
+> 1. **Signal Analysis:** List all I/O ports with names, directions, and bit-widths.
+> 2. **Block Diagram & Architecture:** Describe the internal registers, counters, and data paths needed.
+> 3. **FSM Breakdown (if applicable):** Define the states, next-state logic conditions, and output logic. 
+> 4. **Timing & Edge Considerations:** Explicitly state how reset (sync vs async) and clock edges are handled.
+> 5. **Verilog Generation:** Finally, provide the complete, well-commented Verilog code based *only* on the steps above.
 
 **Next Steps:**
 
