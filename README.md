@@ -67,7 +67,7 @@ After logging into your selected LLM, Copy and paste the following prompt into t
 > * `x`: Signed 16-bit input representing the value for integer square root computation (operational range: -32,768 to +32,767). Negative values should be handled as special cases and output 0.
 > * `y`: Unsigned 8-bit output containing the computed integer square root value (operational range: 0 to 181 for valid positive inputs, 0 for negative inputs).
 
-You can experiment with Chain-of-Though techniques here (especially if the design fails simulation in the next step). For example:
+You can experiment with Chain-of-Thought (CoT) techniques here (especially if the design fails simulation in the next step). For example:
 
 > **Prompt for LLM:**
 >You are an expert digital IC design engineer. Your task is to design a Verilog module for [INSERT SPECIFICATION from earlier]. 
